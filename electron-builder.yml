@@ -1,0 +1,49 @@
+appId: za.co.bsmart.communicator
+productName: B-SMART
+copyright: Copyright © B-SMART™ Digital Smart Communicator
+directories:
+  output: release-native
+extraMetadata:
+  main: electron/main.cjs
+  name: b-smart-communicator
+  version: 1.0.0
+  description: B-SMART™ Offline-Capable Digital Smart Business Card & Lead Communicator
+files:
+  - dist/**/*
+  - electron/**/*
+  - public/pwa-512x512.png
+  - package.json
+  - "!dist/cpanel_app_*"
+  - "!dist/*.zip"
+  - "!dist/*.tar.gz"
+  - "!node_modules/**/*"
+asar: true
+win:
+  icon: public/pwa-512x512.png
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+  artifactName: B-SMART-${version}-Windows-${arch}.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: B-SMART
+portable:
+  artifactName: B-SMART-${version}-Portable-Windows-${arch}.exe
+mac:
+  icon: public/pwa-512x512.png
+  category: public.app-category.business
+  target:
+    - dmg
+linux:
+  icon: public/pwa-512x512.png
+  category: Office
+  target:
+    - AppImage

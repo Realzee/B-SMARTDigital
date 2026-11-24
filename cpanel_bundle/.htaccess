@@ -1,0 +1,5 @@
+PassengerAppRoot "/home/bsmarton/app"
+PassengerBaseURI "/app"
+PassengerNodejs "/home/bsmarton/nodevenv/app/18/bin/node"
+PassengerAppType node
+PassengerStartupFile app.js

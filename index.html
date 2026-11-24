@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Suppress harmless Vite dev WebSocket/HMR disconnect notices in sandbox iframe
+      (function() {
+        var origConsoleError = console.error;
+        console.error = function() {
+          var first = arguments[0];
+          var msg = typeof first === 'string' ? first : (first && first.message ? first.message : '');
+          if (msg && (msg.indexOf('WebSocket') !== -1 || msg.indexOf('[vite]') !== -1 || msg.indexOf('ws:') !== -1)) {
+            return;
+          }
+          origConsoleError.apply(console, arguments);
+        };
+        window.addEventListener('error', function(event) {
+          var message = event && event.message ? event.message : '';
+          if (message && (message.indexOf('WebSocket') !== -1 || message.indexOf('[vite]') !== -1 || message.indexOf('ws:') !== -1)) {
+            event.stopImmediatePropagation();
+            event.preventDefault();
+            return true;
+          }
+        }, true);
+        window.addEventListener('unhandledrejection', function(event) {
+          var reason = event && event.reason;
+          var msg = reason && (reason.message || String(reason));
+          if (msg && (msg.indexOf('WebSocket') !== -1 || msg.indexOf('[vite]') !== -1)) {
+            event.stopImmediatePropagation();
+            event.preventDefault();
+          }
+        }, true);
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>B-SMART™ — Digital Smart Business Card | Unlimited Opportunities</title>
+    <meta name="description" content="Your Business. Smarter. More Connected. Unlimited Opportunities. B-SMART™ is the next-generation Digital Smart Business Card designed to transform the way businesses connect with customers." />
+    <meta property="og:title" content="B-SMART™ — The Business Card That Consistantly Works For Your Business" />
+    <meta property="og:description" content="Your Business. Smarter. More Connected. Unlimited Opportunities. B-SMART™ is the next-generation Digital Smart Business Card designed to transform the way businesses connect with customers." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Mobile Web App & PWA Meta -->
+    <meta name="theme-color" content="#0284c7" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="B-SMART™" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/pwa-192x192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-sky-500 selection:text-white">
+    <div id="root"></div>
+    <script>
+      // Automatically check and activate updated service worker to bypass stale browser caches
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for (var r of registrations) {
+            r.update();
+          }
+        });
+      }
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

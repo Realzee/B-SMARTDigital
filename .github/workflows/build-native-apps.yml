@@ -1,0 +1,112 @@
+name: Build Native Offline Installers (.exe & .apk)
+
+on:
+  workflow_dispatch:
+    inputs:
+      remote_api_url:
+        description: 'Live cPanel / Server Sync Base URL (e.g. https://b-smart-online.co.za/app)'
+        required: false
+        default: 'https://b-smart-online.co.za/app'
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-windows-exe:
+    name: Windows Installer (.exe)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install project dependencies
+        run: npm ci
+
+      - name: Build offline-bundled frontend
+        env:
+          VITE_NATIVE_BUILD: 'true'
+          VITE_REMOTE_API_URL: ${{ github.event.inputs.remote_api_url || 'https://b-smart-online.co.za/app' }}
+        run: npm run build:native
+
+      - name: Install Electron & electron-builder
+        run: npm install --no-save electron electron-builder
+
+      - name: Package Windows .exe (NSIS Installer & Portable)
+        run: npx electron-builder --config electron-builder.yml --win nsis portable --publish never
+
+      - name: Upload Windows .exe artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: B-SMART-Windows-EXE
+          path: |
+            release-native/*.exe
+            !release-native/*.blockmap
+
+  build-android-apk:
+    name: Android Offline App (.apk)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install project dependencies
+        run: npm ci
+
+      - name: Build offline-bundled frontend
+        env:
+          VITE_NATIVE_BUILD: 'true'
+          VITE_REMOTE_API_URL: ${{ github.event.inputs.remote_api_url || 'https://b-smart-online.co.za/app' }}
+        run: npm run build:native
+
+      - name: Install Capacitor CLI & Android runtime
+        run: npm install --no-save @capacitor/core @capacitor/cli @capacitor/android
+
+      - name: Generate & sync Capacitor Android project
+        run: |
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
+          npx cap sync android
+
+      - name: Copy B-SMART app icon into Android mipmap resources
+        run: |
+          for dir in android/app/src/main/res/mipmap-*; do
+            if [ -d "$dir" ]; then
+              cp public/pwa-512x512.png "$dir/ic_launcher.png"
+              cp public/pwa-512x512.png "$dir/ic_launcher_round.png"
+              cp public/pwa-maskable-512x512.png "$dir/ic_launcher_foreground.png"
+            fi
+          done
+
+      - name: Build offline Android APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+          mkdir -p ../release-native
+          cp app/build/outputs/apk/debug/app-debug.apk ../release-native/B-SMART-Android-Offline.apk
+
+      - name: Upload Android .apk artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: B-SMART-Android-APK
+          path: release-native/B-SMART-Android-Offline.apk

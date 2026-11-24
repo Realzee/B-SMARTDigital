@@ -1,0 +1,32 @@
+{
+  "id": "/",
+  "name": "B-SMART™ Digital Smart Communicator",
+  "short_name": "B-SMART™",
+  "description": "Official enterprise digital smart business communicator platform for team member cards, templates, schedules, and offline lead capture.",
+  "theme_color": "#0284c7",
+  "background_color": "#020617",
+  "display": "standalone",
+  "orientation": "any",
+  "start_url": "/",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

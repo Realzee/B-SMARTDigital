@@ -1,0 +1,20 @@
+# ==============================================================================
+# LiteSpeed / Apache Rewrite Rules for b-Smart Online
+# File location on cPanel: /home/bsmarton/public_html/.htaccess
+# ==============================================================================
+# This ensures that when anyone opens a card link at either:
+#   https://b-smart-online.co.za/card/your-name
+# or
+#   https://b-smart-online.co.za/app/card/your-name
+# LiteSpeed web server routes it seamlessly without showing 404!
+# ==============================================================================
+
+RewriteEngine On
+RewriteBase /
+
+# 1. Forward all direct card links to the Node.js /app application
+RewriteRule ^card/(.*)$ /app/card/$1 [R=301,L]
+
+# 2. Forward root domain visitors directly to /app/ (uncomment if you want /app to be the main homepage)
+# RewriteCond %{REQUEST_URI} ^/?$
+# RewriteRule ^$ /app/ [R=301,L]
